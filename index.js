@@ -23,14 +23,19 @@ exports.urlSigner = function(key, secret, options){
   };
 
   return {
-    getUrl : function(verb, fname, bucket, expiresInMinutes){
+    getUrl : function(verb, fname, bucket, expiresInMinutes, download){
       var expires = new Date();
 
       expires.setMinutes(expires.getMinutes() + expiresInMinutes);
 
       var epo = Math.floor(expires.getTime()/1000);
 
+      var ext = filename.split('.').pop();
       var str = verb + '\n\n\n' + epo + '\n' + '/' + bucket + (fname[0] === '/'?'':'/') + fname;
+
+      if (download) {
+        str += '?response-content-type=application/octet-stream';
+      }
 
       var hashed = hmacSha1(str);
 
@@ -38,6 +43,10 @@ exports.urlSigner = function(key, secret, options){
         '?Expires=' + epo +
         '&AWSAccessKeyId=' + key +
         '&Signature=' + encodeURIComponent(hashed);
+
+      if (download) {
+        urlRet += '&response-content-type=application/octet-stream';
+      }
 
       return urlRet;
 
