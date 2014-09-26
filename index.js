@@ -30,7 +30,7 @@ exports.urlSigner = function(key, secret, options){
 
       var epo = Math.floor(expires.getTime()/1000);
 
-      var ext = filename.split('.').pop();
+      var ext = fname.split('.').pop();
       var str = verb + '\n\n\n' + epo + '\n' + '/' + bucket + (fname[0] === '/'?'':'/') + fname;
 
       if (download) {
